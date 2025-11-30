@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Authors - Library System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Authors</h2>
+
+<div class="row">
+    {% for author in authors %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ author.first_name }} {{ author.last_name }}</h5>
+                <p class="card-text text-muted">
+                    {{ author.books.count }} book{{ author.books.count|pluralize }}
+                </p>
+                {% if author.biography %}
+                <p class="card-text">{{ author.biography|truncatewords:30 }}</p>
+                {% endif %}
+                <a href="{% url 'book_list' %}?author={{ author.id }}" class="btn btn-outline-primary btn-sm">
+                    View Books
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <h5>No Authors Found</h5>
+            <p>No authors are available.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

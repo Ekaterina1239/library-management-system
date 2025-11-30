@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                                {{ form.title }}
+                                {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.author.id_for_label }}" class="form-label">Author *</label>
+                                {{ form.author }}
+                                {% if form.author.errors %}
+                                <div class="text-danger">{{ form.author.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.isbn.id_for_label }}" class="form-label">ISBN *</label>
+                                {{ form.isbn }}
+                                {% if form.isbn.errors %}
+                                <div class="text-danger">{{ form.isbn.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.genre.id_for_label }}" class="form-label">Genre</label>
+                                {{ form.genre }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.publication_year.id_for_label }}" class="form-label">Publication Year *</label>
+                                {{ form.publication_year }}
+                                {% if form.publication_year.errors %}
+                                <div class="text-danger">{{ form.publication_year.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.publisher.id_for_label }}" class="form-label">Publisher</label>
+                                {{ form.publisher }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.total_copies.id_for_label }}" class="form-label">Total Copies *</label>
+                                {{ form.total_copies }}
+                                {% if form.total_copies.errors %}
+                                <div class="text-danger">{{ form.total_copies.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.available_copies.id_for_label }}" class="form-label">Available Copies *</label>
+                                {{ form.available_copies }}
+                                {% if form.available_copies.errors %}
+                                <div class="text-danger">{{ form.available_copies.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.cover_image.id_for_label }}" class="form-label">Cover Image</label>
+                        {{ form.cover_image }}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'book_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Book</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

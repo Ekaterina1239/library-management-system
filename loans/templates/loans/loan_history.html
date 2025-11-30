@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan History - Library System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Loan History</h2>
+    <div class="btn-group">
+        <a href="{% url 'my_loans' %}" class="btn btn-outline-secondary">Active Loans</a>
+        <a href="{% url 'loan_history' %}" class="btn btn-outline-primary active">Loan History</a>
+    </div>
+</div>
+
+{% if loans %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>Borrowed Date</th>
+                <th>Due Date</th>
+                <th>Returned Date</th>
+                <th>Renewals</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td>
+                    <strong>
+                        <a href="{% url 'book_detail' loan.book.pk %}">{{ loan.book.title }}</a>
+                    </strong>
+                </td>
+                <td>{{ loan.book.author.first_name }} {{ loan.book.author.last_name }}</td>
+                <td>{{ loan.borrowed_date|date:"M d, Y" }}</td>
+                <td>{{ loan.due_date|date:"M d, Y" }}</td>
+                <td>
+                    {% if loan.returned_date %}
+                    {{ loan.returned_date|date:"M d, Y" }}
+                    {% else %}
+                    <span class="text-muted">Not returned</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-secondary">{{ loan.renewals }}</span>
+                </td>
+                <td>
+                    {% if loan.returned_date %}
+                    <span class="badge bg-success">Returned</span>
+                    {% elif loan.is_overdue %}
+                    <span class="badge bg-danger">Overdue</span>
+                    {% else %}
+                    <span class="badge bg-primary">Active</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <div class="mb-3">
+        <i class="fas fa-history fa-3x text-muted"></i>
+    </div>
+    <h5>No Loan History</h5>
+    <p>You haven't borrowed any books yet.</p>
+    <a href="{% url 'book_list' %}" class="btn btn-primary">Browse Books</a>
+</div>
+{% endif %}
+{% endblock %}

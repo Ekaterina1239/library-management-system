@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Export Data - Library System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Export Data</h2>
+    <div class="btn-group">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary">Dashboard</a>
+        <a href="{% url 'export_data' %}" class="btn btn-outline-success active">Export Data</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white text-center">
+                <i class="fas fa-book fa-2x mb-2"></i>
+                <h5 class="mb-0">Books Data</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text">Export complete books catalog with all details including availability and genre information.</p>
+                <ul class="list-unstyled text-start mb-3">
+                    <li><i class="fas fa-check text-success me-2"></i>Book titles and authors</li>
+                    <li><i class="fas fa-check text-success me-2"></i>ISBN and publication details</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Genre and publisher information</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Copy availability status</li>
+                </ul>
+                <a href="{% url 'export_books_excel' %}" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Export Books
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white text-center">
+                <i class="fas fa-exchange-alt fa-2x mb-2"></i>
+                <h5 class="mb-0">Loans Data</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text">Export comprehensive loans history with user and book details, dates, and status information.</p>
+                <ul class="list-unstyled text-start mb-3">
+                    <li><i class="fas fa-check text-success me-2"></i>User borrowing history</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Book loan dates and status</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Due dates and return dates</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Overdue and active loans</li>
+                </ul>
+                <a href="{% url 'export_loans_excel' %}" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Export Loans
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h5 class="mb-0">Users Data</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="card-text">Export user database with membership information, user types, and account status.</p>
+                <ul class="list-unstyled text-start mb-3">
+                    <li><i class="fas fa-check text-success me-2"></i>User profiles and contact info</li>
+                    <li><i class="fas fa-check text-success me-2"></i>User types and roles</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Membership IDs and dates</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Account activity status</li>
+                </ul>
+                <a href="{% url 'export_users_excel' %}" class="btn btn-info">
+                    <i class="fas fa-download me-2"></i>Export Users
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Export Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-info-circle text-primary me-2"></i>About Excel Exports</h6>
+                <ul class="text-muted">
+                    <li>All exports are in Microsoft Excel format (.xlsx)</li>
+                    <li>Data is exported in a structured table format</li>
+                    <li>Exports include all available records</li>
+                    <li>Files can be opened in Excel, Google Sheets, or similar applications</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-lightbulb text-warning me-2"></i>Usage Tips</h6>
+                <ul class="text-muted">
+                    <li>Use filters and pivot tables in Excel for analysis</li>
+                    <li>Data can be imported into other systems</li>
+                    <li>Use for reporting, analytics, or backup purposes</li>
+                    <li>Combine multiple exports for comprehensive analysis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

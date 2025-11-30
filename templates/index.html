@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded mb-4">
+    <h1 class="display-4">Welcome to Library Management System</h1>
+    <p class="lead">A comprehensive solution for managing your library operations, books, loans, and users.</p>
+    
+    {% if user.is_authenticated %}
+        <div class="alert alert-success mt-4">
+            <h5>Welcome, {{ user.first_name|default:user.username }}!</h5>
+            <p>You are logged in as <strong>{{ user.get_user_type_display }}</strong>.</p>
+        </div>
+    {% else %}
+        <hr class="my-4">
+        <p>Join our library community to discover and borrow books!</p>
+        <div class="d-grid gap-2 d-md-block">
+            <a class="btn btn-primary btn-lg me-2" href="{% url 'register' %}">
+                <i class="fas fa-user-plus"></i> Join as Reader
+            </a>
+            <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+        <div class="mt-3">
+            <small class="text-muted">
+                Library staff members need an invitation from IT department to register.
+                <a href="#">Staff registration</a>
+            </small>
+        </div>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+<div class="row">
+    <div class="col-md-8">
+        <h3>Quick Statistics</h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body text-center">
+                        <h4 id="active-loans-count">0</h4>
+                        <p>Active Loans</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body text-center">
+                        <h4 id="overdue-loans-count">0</h4>
+                        <p>Overdue Loans</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body text-center">
+                        <h4 id="reservations-count">0</h4>
+                        <p>Active Reservations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-book"></i> Browse Books
+                    </a>
+                    <a href="{% url 'my_loans' %}" class="btn btn-outline-success">
+                        <i class="fas fa-list"></i> My Loans
+                    </a>
+                    <a href="{% url 'my_reservations' %}" class="btn btn-outline-info">
+                        <i class="fas fa-bookmark"></i> My Reservations
+                    </a>
+                    {% if user.user_type in 'librarian,it_staff,management' %}
+                    <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-chart-bar"></i> View Reports
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}All Reservations - Library System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All Reservations</h2>
+    <div class="btn-group">
+        <a href="{% url 'all_reservations' %}" class="btn btn-outline-primary {% if not request.GET.status %}active{% endif %}">All</a>
+        <a href="{% url 'all_reservations' %}?status=pending" class="btn btn-outline-warning {% if request.GET.status == 'pending' %}active{% endif %}">Pending</a>
+        <a href="{% url 'all_reservations' %}?status=available" class="btn btn-outline-success {% if request.GET.status == 'available' %}active{% endif %}">Available</a>
+        <a href="{% url 'all_reservations' %}?status=fulfilled" class="btn btn-outline-info {% if request.GET.status == 'fulfilled' %}active{% endif %}">Fulfilled</a>
+        <a href="{% url 'all_reservations' %}?status=cancelled" class="btn btn-outline-secondary {% if request.GET.status == 'cancelled' %}active{% endif %}">Cancelled</a>
+    </div>
+</div>
+
+{% if reservations %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Book</th>
+                <th>Reserved Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>
+                    <strong>{{ reservation.user.username }}</strong>
+                    <br>
+                    <small class="text-muted">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</small>
+                </td>
+                <td>
+                    <strong>
+                        <a href="{% url 'book_detail' reservation.book.pk %}">{{ reservation.book.title }}</a>
+                    </strong>
+                    <br>
+                    <small class="text-muted">{{ reservation.book.author.first_name }} {{ reservation.book.author.last_name }}</small>
+                </td>
+                <td>{{ reservation.reserved_date|date:"M d, Y" }}</td>
+                <td>
+                    <span class="badge 
+                        {% if reservation.status == 'pending' %}bg-warning
+                        {% elif reservation.status == 'available' %}bg-success
+                        {% elif reservation.status == 'fulfilled' %}bg-info
+                        {% else %}bg-secondary{% endif %}">
+                        {{ reservation.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if reservation.status == 'available' %}
+                    <div class="btn-group btn-group-sm">
+                        <form method="post" action="{% url 'manage_reservation' reservation.pk 'fulfill' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success" title="Fulfill Reservation">
+                                <i class="fas fa-check"></i> Fulfill
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'manage_reservation' reservation.pk 'cancel' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger" title="Cancel Reservation">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </form>
+                    </div>
+                    {% elif reservation.status == 'pending' %}
+                    <form method="post" action="{% url 'manage_reservation' reservation.pk 'cancel' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Cancel Reservation">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <h5>No Reservations Found</h5>
+    <p>No reservations match the selected criteria.</p>
+</div>
+{% endif %}
+{% endblock %}

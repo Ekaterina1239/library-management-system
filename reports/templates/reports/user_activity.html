@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}User Activity Report - Library System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>User Activity Report</h2>
+    <div class="btn-group">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-secondary">Dashboard</a>
+        <a href="{% url 'popular_books_report' %}" class="btn btn-outline-secondary">Popular Books</a>
+        <a href="{% url 'user_activity_report' %}" class="btn btn-outline-primary active">User Activity</a>
+        <a href="{% url 'loan_statistics_report' %}" class="btn btn-outline-secondary">Loan Statistics</a>
+    </div>
+</div>
+
+<!-- Period Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Filter by Period</h5>
+                <div class="btn-group" role="group">
+                    <a href="?period=week" class="btn btn-outline-primary {% if period == 'week' %}active{% endif %}">Last Week</a>
+                    <a href="?period=month" class="btn btn-outline-primary {% if period == 'month' %}active{% endif %}">Last Month</a>
+                    <a href="?period=year" class="btn btn-outline-primary {% if period == 'year' %}active{% endif %}">Last Year</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">{{ recent_loans }}</h4>
+                        <p class="text-muted mb-0">Recent Loans</p>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">{{ recent_returns }}</h4>
+                        <p class="text-muted mb-0">Recent Returns</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if active_users %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>User</th>
+                <th>User Type</th>
+                <th>Total Loans</th>
+                <th>Active Loans</th>
+                <th>Overdue Loans</th>
+                <th>Activity Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in active_users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <strong>{{ user.username }}</strong>
+                    <br>
+                    <small class="text-muted">{{ user.first_name }} {{ user.last_name }}</small>
+                </td>
+                <td>
+                    <span class="badge 
+                        {% if user.user_type == 'reader' %}bg-secondary
+                        {% elif user.user_type == 'librarian' %}bg-primary
+                        {% elif user.user_type == 'it_staff' %}bg-warning
+                        {% else %}bg-success{% endif %}">
+                        {{ user.get_user_type_display }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-info">{{ user.loan_count }}</span>
+                </td>
+                <td>
+                    <span class="badge bg-primary">{{ user.active_loans }}</span>
+                </td>
+                <td>
+                    {% if user.overdue_loans > 0 %}
+                    <span class="badge bg-danger">{{ user.overdue_loans }}</span>
+                    {% else %}
+                    <span class="badge bg-success">0</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% widthratio user.loan_count 50 100 as activity_score %}
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar 
+                            {% if activity_score > 80 %}bg-success
+                            {% elif activity_score > 50 %}bg-info
+                            {% elif activity_score > 20 %}bg-warning
+                            {% else %}bg-secondary{% endif %}" 
+                            role="progressbar" style="width: {{ activity_score }}%;" 
+                            aria-valuenow="{{ activity_score }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ activity_score }}%
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <h5>No Data Available</h5>
+    <p>No user activity data found for the selected period.</p>
+</div>
+{% endif %}
+{% endblock %}

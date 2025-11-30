@@ -1,0 +1,24 @@
+{% for notification in notifications|slice:":5" %}
+<div class="dropdown-item notification-item {% if not notification.is_read %}bg-light{% endif %}" 
+     style="white-space: normal;">
+    <div class="d-flex justify-content-between align-items-start">
+        <div class="flex-grow-1">
+            <h6 class="mb-1 small">{{ notification.title }}</h6>
+            <p class="mb-1 small text-muted">{{ notification.message|truncatewords:10 }}</p>
+            <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+        </div>
+        {% if not notification.is_read %}
+        <button class="btn btn-sm btn-outline-success mark-as-read-btn ms-2" 
+                data-notification-id="{{ notification.id }}"
+                title="Mark as read">
+            <i class="fas fa-check"></i>
+        </button>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="px-3 py-2 text-center text-muted">
+    <i class="fas fa-bell-slash fa-lg mb-2"></i>
+    <p class="mb-0">No notifications</p>
+</div>
+{% endfor %}

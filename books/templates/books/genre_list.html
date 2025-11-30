@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Genres - Library System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Book Genres</h2>
+
+<div class="row">
+    {% for genre in genres %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ genre.name }}</h5>
+                <p class="card-text text-muted">
+                    {{ genre.books.count }} book{{ genre.books.count|pluralize }}
+                </p>
+                <a href="{% url 'book_list' %}?genre={{ genre.id }}" class="btn btn-outline-primary btn-sm">
+                    View Books
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <h5>No Genres Found</h5>
+            <p>No book genres are available.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

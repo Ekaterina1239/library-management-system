@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Library System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Notifications</h2>
+    <div class="btn-group">
+        <a href="{% url 'notification_list' %}" class="btn btn-outline-primary active">All Notifications</a>
+        <a href="{% url 'notification_preferences' %}" class="btn btn-outline-secondary">Preferences</a>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h4 class="card-title">{{ notifications.count }}</h4>
+                <p class="card-text">Total Notifications</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark">
+            <div class="card-body text-center">
+                <h4 class="card-title">{{ unread_count }}</h4>
+                <p class="card-text">Unread Notifications</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <!-- ИСПРАВЛЕННАЯ СТРОКА -->
+                <h4 class="card-title">{{ notifications.count|add:unread_count|add:"-1" }}</h4>
+                <p class="card-text">Read Notifications</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Actions -->
+{% if notifications %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span class="text-muted">Showing {{ notifications.count }} notification{{ notifications.count|pluralize }}</span>
+    </div>
+    <div>
+        {% if unread_count > 0 %}
+        <form method="post" action="{% url 'mark_all_read' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-check-double"></i> Mark All as Read
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if notifications %}
+<div class="list-group">
+    {% for notification in notifications %}
+    <div class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-warning{% endif %}">
+        <div class="d-flex w-100 justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center mb-2">
+                    <h6 class="mb-0 me-2">{{ notification.title }}</h6>
+                    {% if not notification.is_read %}
+                    <span class="badge bg-warning">New</span>
+                    {% endif %}
+                </div>
+                <p class="mb-2">{{ notification.message }}</p>
+                <small class="text-muted">
+                    <i class="fas fa-clock"></i> {{ notification.created_at|timesince }} ago
+                    {% if notification.notification_type %}
+                    • <span class="badge bg-secondary">{{ notification.get_notification_type_display }}</span>
+                    {% endif %}
+                </small>
+            </div>
+            <div class="ms-3">
+                {% if not notification.is_read %}
+                <form method="post" action="{% url 'mark_notification_read' notification.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-success btn-sm" title="Mark as Read">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </form>
+                {% else %}
+                <span class="text-success" title="Read">
+                    <i class="fas fa-check-circle"></i>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <div class="mb-3">
+        <i class="fas fa-bell fa-3x text-muted"></i>
+    </div>
+    <h5>No Notifications</h5>
+    <p>You don't have any notifications at the moment.</p>
+</div>
+{% endif %}
+
+<!-- JavaScript for AJAX mark as read -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // AJAX mark as read
+    const markReadButtons = document.querySelectorAll('form[action*="mark_notification_read"] button');
+    markReadButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const notificationItem = this.closest('.list-group-item');
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    notificationItem.classList.remove('list-group-item-warning');
+                    const badge = notificationItem.querySelector('.badge.bg-warning');
+                    if (badge) badge.remove();
+                    
+                    const checkIcon = this.querySelector('i');
+                    checkIcon.className = 'fas fa-check-circle';
+                    this.classList.remove('btn-outline-success');
+                    this.classList.add('btn-success');
+                    
+                    // Update unread count
+                    updateUnreadCount();
+                }
+            });
+        });
+    });
+
+    // Update unread count in navbar
+    function updateUnreadCount() {
+        fetch('{% url "get_unread_count" %}')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('notification-badge');
+                if (badge) {
+                    if (data.unread_count > 0) {
+                        badge.textContent = data.unread_count;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            });
+    }
+});
+</script>
+{% endblock %}

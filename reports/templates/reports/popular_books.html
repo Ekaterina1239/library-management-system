@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Popular Books Report</h2>
+    <div class="btn-group">
+        <a href="?period=week" class="btn btn-outline-primary {% if period == 'week' %}active{% endif %}">This Week</a>
+        <a href="?period=month" class="btn btn-outline-primary {% if period == 'month' %}active{% endif %}">This Month</a>
+        <a href="?period=year" class="btn btn-outline-primary {% if period == 'year' %}active{% endif %}">This Year</a>
+        <a href="?period=all" class="btn btn-outline-primary {% if period == 'all' %}active{% endif %}">All Time</a>
+    </div>
+</div>
+
+{% if popular_books %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Total Loans</th>
+                <th>Available Copies</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in popular_books %}
+            <tr>
+                <td><strong>#{{ forloop.counter }}</strong></td>
+                <td>
+                    <strong>{{ book.title }}</strong>
+                    {% if book.isbn %}
+                    <br><small class="text-muted">ISBN: {{ book.isbn }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.genre.name|default:"-" }}</td>
+                <td>
+                    <span class="badge bg-primary">{{ book.loan_count }}</span>
+                </td>
+                <td>{{ book.available_copies }}/{{ book.total_copies }}</td>
+                <td>
+                    {% if book.is_available %}
+                    <span class="badge bg-success">Available</span>
+                    {% else %}
+                    <span class="badge bg-danger">Unavailable</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Report Summary</h5>
+        <p>
+            Showing the top {{ popular_books|length }} most borrowed books 
+            {% if period == 'week' %}
+            in the last 7 days.
+            {% elif period == 'month' %}
+            in the last 30 days.
+            {% elif period == 'year' %}
+            in the last 365 days.
+            {% else %}
+            of all time.
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <h5>No Data Available</h5>
+    <p>No popular books data available for the selected period.</p>
+</div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'reports_dashboard' %}" class="btn btn-secondary">Back to Reports</a>
+    <a href="{% url 'export_books_excel' %}" class="btn btn-success">
+        <i class="fas fa-download"></i> Export to Excel
+    </a>
+</div>
+{% endblock %}

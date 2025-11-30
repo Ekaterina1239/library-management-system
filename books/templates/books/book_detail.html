@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ book.title }}</h2>
+        <p class="lead">by {{ book.author }}</p>
+        
+        <div class="mb-3">
+            <span class="badge bg-secondary">{{ book.genre.name|default:"No Genre" }}</span>
+            <span class="badge bg-info">Published: {{ book.publication_year }}</span>
+            <span class="badge bg-{% if book.is_available %}success{% else %}danger{% endif %}">
+                {{ book.available_copies }} of {{ book.total_copies }} available
+            </span>
+        </div>
+        
+        {% if book.cover_image %}
+        <div class="mb-4">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-fluid rounded" style="max-height: 400px;">
+        </div>
+        {% endif %}
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Description</h5>
+                <p class="card-text">{{ book.description|linebreaksbr|default:"No description available." }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Book Details</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                        <p><strong>Publisher:</strong> {{ book.publisher|default:"Not specified" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Added:</strong> {{ book.created_at|date:"M d, Y" }}</p>
+                        <p><strong>Last Updated:</strong> {{ book.updated_at|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Book Actions</h5>
+                
+                {% if user.is_authenticated %}
+                    {% if user_has_loan %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        You currently have this book on loan.
+                    </div>
+                    {% elif user_has_reservation %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-bookmark me-2"></i>
+                        You have an active reservation for this book.
+                    </div>
+                    {% elif book.is_available %}
+                    <form method="post" action="{% url 'borrow_book' book.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-book me-2"></i>Borrow This Book
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'reserve_book' book.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning w-100 mb-2">
+                            <i class="fas fa-bookmark me-2"></i>Reserve This Book
+                        </button>
+                    </form>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Please <a href="{% url 'login' %}">login</a> to borrow or reserve books.
+                </div>
+                {% endif %}
+                
+                <!-- Кнопки управления книгами ТОЛЬКО для библиотекарей и IT staff -->
+                {% if user.is_authenticated and user.user_type in 'librarian it_staff' %}
+                <hr>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'book_edit' book.pk %}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Book
+                    </a>
+                    <a href="{% url 'book_delete' book.pk %}" class="btn btn-outline-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Book
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Related Books -->
+        {% if book.genre %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6 class="card-title">More in {{ book.genre.name }}</h6>
+                <p class="text-muted">Other books in this genre</p>
+                <!-- Would typically show related books here -->
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

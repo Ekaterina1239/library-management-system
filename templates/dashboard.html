@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Dashboard</h2>
+    <div class="btn-group">
+        <a href="{% url 'reports_dashboard' %}" class="btn btn-outline-primary">Reports</a>
+        <a href="{% url 'user_management' %}" class="btn btn-outline-secondary">User Management</a>
+        <a href="{% url 'all_loans' %}" class="btn btn-outline-success">All Loans</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <h4>{{ stats.total_books }}</h4>
+                <p>Total Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h4>{{ stats.total_users }}</h4>
+                <p>Total Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <h4>{{ stats.active_loans }}</h4>
+                <p>Active Loans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body text-center">
+                <h4>{{ stats.overdue_loans }}</h4>
+                <p>Overdue Loans</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'book_create' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus me-2"></i>Add New Book
+                    </a>
+                    <a href="{% url 'all_loans' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-list me-2"></i>Manage All Loans
+                    </a>
+                    <a href="{% url 'user_management' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users me-2"></i>User Management
+                    </a>
+                    <a href="{% url 'export_data' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-download me-2"></i>Export Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">System Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Library Utilization:</strong>
+                    <div class="progress mt-1">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {{ stats.utilization_rate }}%">
+                            {{ stats.utilization_rate }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Available Copies:</strong> {{ stats.available_copies }}/{{ stats.total_copies }}
+                </div>
+                <div class="mb-3">
+                    <strong>Pending Reservations:</strong> {{ stats.pending_reservations }}
+                </div>
+                <div class="mb-3">
+                    <strong>Recent Loans (7 days):</strong> {{ stats.recent_loans_7d }}
+                </div>
+                <div class="mb-3">
+                    <strong>Recent Returns (7 days):</strong> {{ stats.recent_returns_7d }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

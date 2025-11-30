@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Books - Library System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Search Results for "{{ query }}"</h2>
+
+{% if books %}
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">
+                    by {{ book.author.first_name }} {{ book.author.last_name }}
+                </p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        {{ book.genre.name }} • {{ book.publication_year }} • 
+                        <span class="badge {% if book.available_copies > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ book.available_copies }} available
+                        </span>
+                    </small>
+                </p>
+                <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <h5>No Books Found</h5>
+    <p>No books match your search criteria "{{ query }}".</p>
+</div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'book_list' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to All Books
+    </a>
+</div>
+{% endblock %}

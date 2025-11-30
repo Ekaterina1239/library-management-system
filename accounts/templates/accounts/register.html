@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Library System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Reader Registration</h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Create a reader account to borrow books from our library.
+                    All fields marked with * are required.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label">Username *</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <div class="text-danger small">{{ form.username.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_email" class="form-label">Email *</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_first_name" class="form-label">First Name *</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_last_name" class="form-label">Last Name *</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_password1" class="form-label">Password *</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                <div class="text-danger small">{{ form.password1.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <ul class="small">
+                                        <li>Your password can't be too similar to your other personal information.</li>
+                                        <li>Your password must contain at least 8 characters.</li>
+                                        <li>Your password can't be a commonly used password.</li>
+                                        <li>Your password can't be entirely numeric.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_password2" class="form-label">Confirm Password *</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                <div class="text-danger small">{{ form.password2.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Enter the same password as before, for verification.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_phone_number" class="form-label">Phone Number</label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}
+                                <div class="text-danger small">{{ form.phone_number.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                <div class="text-danger small">{{ form.date_of_birth.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_address" class="form-label">Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <div class="text-danger small">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Register as Reader</button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <p class="mb-0">Already have an account?
+                        <a href="{% url 'login' %}" class="text-decoration-none">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body text-center">
+                <h6>Staff Registration</h6>
+                <p class="text-muted mb-3">
+                    Staff accounts are created by library administrators.
+                    If you need staff access, please contact the library management.
+                </p>
+                <p class="small text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Reader accounts can borrow books, view loan history, and make reservations.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+</style>
+{% endblock %}

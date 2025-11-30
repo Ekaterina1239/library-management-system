@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Reports Dashboard</h2>
+    <div class="btn-group">
+        <a href="{% url 'export_data' %}" class="btn btn-success">
+            <i class="fas fa-download"></i> Export Data
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <h4>{{ total_books }}</h4>
+                <p>Total Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h4>{{ total_copies }}</h4>
+                <p>Total Copies</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body text-center">
+                <h4>{{ available_copies }}</h4>
+                <p>Available Copies</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <h4>{{ total_users }}</h4>
+                <p>Total Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body text-center">
+                <h4>{{ active_loans }}</h4>
+                <p>Active Loans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body text-center">
+                <h4>{{ overdue_loans }}</h4>
+                <p>Overdue Loans</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-primary">{{ recent_loans_7d }}</h5>
+                <p class="text-muted">Loans (7 days)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-success">{{ recent_returns_7d }}</h5>
+                <p class="text-muted">Returns (7 days)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-warning">{{ pending_reservations }}</h5>
+                <p class="text-muted">Pending Reservations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="text-info">{{ utilization_rate }}%</h5>
+                <p class="text-muted">Utilization Rate</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Popular Reports</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'popular_books' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-line me-2"></i>Popular Books Report
+                    </a>
+                    <a href="{% url 'user_activity' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users me-2"></i>User Activity Report
+                    </a>
+                    <a href="{% url 'loan_statistics' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book me-2"></i>Loan Statistics Report
+                    </a>
+                    <a href="{% url 'all_loans' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-list me-2"></i>All Loans Management
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Export</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'export_books_excel' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-excel me-2 text-success"></i>Export Books to Excel
+                    </a>
+                    <a href="{% url 'export_loans_excel' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-excel me-2 text-success"></i>Export Loans to Excel
+                    </a>
+                    <a href="{% url 'export_users_excel' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-excel me-2 text-success"></i>Export Users to Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Library Overview</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-unstyled">
+                    <li><strong>Collection Size:</strong> {{ total_books }} books ({{ total_copies }} copies)</li>
+                    <li><strong>Availability:</strong> {{ available_copies }} copies available</li>
+                    <li><strong>Active Circulation:</strong> {{ active_loans }} books on loan</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-unstyled">
+                    <li><strong>User Base:</strong> {{ total_users }} registered users</li>
+                    <li><strong>Overdue Items:</strong> {{ overdue_loans }} books overdue</li>
+                    <li><strong>Recent Activity:</strong> {{ recent_loans_7d }} loans in last 7 days</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
