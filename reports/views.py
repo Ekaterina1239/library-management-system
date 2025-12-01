@@ -188,10 +188,8 @@ def export_books_excel(request):
 def export_loans_excel(request):
     loans = Loan.objects.select_related('user', 'book').all()
 
-    # Подготавливаем данные с преобразованием дат
     data = []
     for loan in loans:
-        # Преобразуем даты в строки для избежания проблем с timezone
         borrowed_date = loan.borrowed_date.strftime('%Y-%m-%d %H:%M') if loan.borrowed_date else ''
         due_date = loan.due_date.strftime('%Y-%m-%d %H:%M') if loan.due_date else ''
         returned_date = loan.returned_date.strftime('%Y-%m-%d %H:%M') if loan.returned_date else ''
@@ -310,7 +308,6 @@ def export_reservations_excel(request):
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name='Reservations', index=False)
 
-        # Авто-ширина колонок
         worksheet = writer.sheets['Reservations']
         for column in worksheet.columns:
             max_length = 0

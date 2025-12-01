@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, StaffInvite
-from django.utils import timezone
-from datetime import timedelta
+from .models import User
+
 
 from django import forms
 
@@ -23,7 +22,6 @@ class LoginForm(forms.Form):
     )
 
 class ReaderRegistrationForm(UserCreationForm):
-    """Форма для самостоятельной регистрации читателей"""
     email = forms.EmailField(required=True)
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
@@ -45,7 +43,6 @@ class ReaderRegistrationForm(UserCreationForm):
 
 
 class UserProfileForm(forms.ModelForm):
-    """Форма для редактирования профиля"""
 
     class Meta:
         model = User
@@ -53,7 +50,6 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserManagementForm(forms.ModelForm):
-    """Форма для управления пользователями (IT staff)"""
 
     class Meta:
         model = User
@@ -62,7 +58,6 @@ class UserManagementForm(forms.ModelForm):
 
 # RENAME THIS FORM to avoid conflict with Django's UserCreationForm
 class CustomUserCreationForm(forms.ModelForm):
-    """Форма для создания пользователей IT staff"""
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput,
@@ -82,7 +77,6 @@ class CustomUserCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Установите все доступные типы пользователей
         self.fields['user_type'].choices = [
             ('reader', 'Reader'),
             ('librarian', 'Librarian'),
@@ -101,7 +95,6 @@ class CustomUserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
 
-        # Если пароль не указан, генерируем случайный
         if not self.cleaned_data["password1"]:
             password = User.objects.make_random_password()
             user.set_password(password)
